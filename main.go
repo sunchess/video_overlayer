@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-	"video_updater/src/config"
-	"video_updater/src/process"
+	"video_updater/internal/config"
+	"video_updater/internal/process"
 )
 
 var AppConfig = &config.ConfigStruct{}

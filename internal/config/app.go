@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"video_updater/src/database"
+	"video_updater/internal/database"
 
 	"github.com/joho/godotenv"
 )

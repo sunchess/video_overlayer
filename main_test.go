@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 	"time"
-	"video_updater/src/config"
+	"video_updater/internal/config"
 )
 
 func TestProcessingWorker(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"video_updater/src/config"
+	"video_updater/internal/config"
 
 	"golang.org/x/exp/rand"
 )
@@ -14,7 +14,7 @@ import (
 type Process struct {
 	inputPostPath      string
 	mediaDirectory     string
-	signVideoPath      string
+	outroVideoPath     string
 	inputVideoPath     string
 	processedVideoPath string
 	appConfig          *config.ConfigStruct
@@ -26,7 +26,7 @@ func NewProcess(inputPostPath string, AppConfig *config.ConfigStruct) *Process {
 	return &Process{
 		inputPostPath:      inputPostPath,
 		mediaDirectory:     mediaDirectory,
-		signVideoPath:      getSignVideoPath(),
+		outroVideoPath:     getoutroVideoPath(),
 		processedVideoPath: filepath.Join(mediaDirectory, AppConfig.ProcessedVideoName),
 		appConfig:          AppConfig,
 	}
@@ -78,7 +78,7 @@ func (p *Process) processVideoUpdate() error {
 	log.Printf("processing video %s", p.inputVideoPath)
 	// add video to the end of the video file by ffmpeg
 	args := []string{
-		"-i", p.inputVideoPath, "-i", p.signVideoPath,
+		"-i", p.inputVideoPath, "-i", p.outroVideoPath,
 		"-filter_complex",
 		"[0:v]scale=720:1280,setsar=1[in0];[1:v]scale=720:1280,setsar=1[in1];[in0][0:a][in1][1:a]concat=n=2:v=1:a=1[outv][outa]",
 		"-map", "[outv]", "-map", "[outa]",
@@ -95,13 +95,13 @@ func (p *Process) processVideoUpdate() error {
 	return nil
 }
 
-func getSignVideoPath() string {
-	signVideoPath := os.Getenv("SIGNS_VIDEO_PATH")
-	if signVideoPath == "" {
-		log.Fatal("SIGNS_VIDEO_PATH is not set")
+func getoutroVideoPath() string {
+	outroVideoPath := os.Getenv("OUTRO_VIDEOS_PATH")
+	if outroVideoPath == "" {
+		log.Fatal("OUTRO_VIDEOS_PATH is not set")
 	}
 
-	files, err := os.ReadDir(signVideoPath)
+	files, err := os.ReadDir(outroVideoPath)
 
 	if err != nil {
 		log.Fatal(err)
@@ -117,7 +117,7 @@ func getSignVideoPath() string {
 
 	randomInt := rand.Intn(len(allFiles))
 
-	return filepath.Join(signVideoPath, allFiles[randomInt])
+	return filepath.Join(outroVideoPath, allFiles[randomInt])
 }
 
 func getVideoFile(mediaDirectory string) (string, error) {
